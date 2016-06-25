@@ -1,41 +1,69 @@
 <?php 
 $id=$_REQUEST['id'];
-	$title="";
-	$question="";
-	$description="";
-	$code="";
-	$date="";
+	
+  //Left side of = sign call Key and right side calls value
 
-if($id==1){
- $title="Programming Question #1";
- $question="I am having trouble with this course.";
- $description="I think I am in wrong court.";
- $code="alert(This is a messeage)";
- $date="June 3, 2016";
-}
-elseif($id==2){
- $title="Programming Question #2";
- $question="What is the use of Laravel.";
- $description="I think I am in wrong court.";
- $code="alert(This is a messeage)";
- $date="June 5, 2016";
-}
+
+  //Sets the empty varibales using array
+  $object=array(
+      'title'=>'',
+      'question'=>'',
+      'description'=>'',
+      'code'=>'',
+      'date'=>'',
+    );
+
+  //database connection credential
+  $servername='localhost';
+  $username='homestead';
+  $password='secret';
+
+  //create connection
+  $connection = new mysqli($servername, $username, $password);
+
+  //check of connection error
+  if($connection->connect_error){
+    echo 'Connection Failed: ' . $connection->connect_error;
+    exit;
+  }
+
+  //otherwise connection successful message
+  //echo 'Connected Successfully';
+
+  //connect to "fitl" database
+  $connection->select_db('fitl');
+
+  //Query to select the object
+  $sql = 'select * FROM questions WHERE id = ' . $id;
+
+
+  //Execute the query
+  $result = $connection->query($sql);
+
+
+  //Check for and retrive the array
+    if($result->num_rows > 0)
+      $object = $result->fetch_assoc();
+    // echo '<pre>';
+    //print_r($object);
+    //echo '</pre>';
 
 ?>
 
 <!DOCTYPE html>
 <html>
   <head> 
-    <title> <?php echo $title;?>  </title>
+    <title> <?php echo $object['title'];?>  </title>
 
   </head>
 
   <body>
-    <h1>  <?php echo $question;?> </h1>
+    <h1> <?php echo $object['question'];?> </h1>
+    <h3>  <?php echo $object['description']?> </h3>
    
-    <pre> <?php echo $code;?> </pre>
+    <pre> <?php echo $object['code'];?> </pre>
  	
- 	<p> Question Date: <?php echo $date;?></p>
+ 	<p> Question Date: <?php echo $object['submitted_at'];?> </p>
 
   </body>
 </html>
